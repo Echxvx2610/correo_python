@@ -1,0 +1,88 @@
+<!-- index.html (Frontend) -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Pedido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: #2d87f0;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1d6cb2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Formulario de Pedido</h2>
+        <label for="customer_name">Nombre del Cliente:</label>
+        <input type="text" id="customer_name" placeholder="Nombre del cliente">
+
+        <label for="item">Producto:</label>
+        <input type="text" id="item" placeholder="Producto a pedir">
+
+        <label for="quantity">Cantidad:</label>
+        <input type="number" id="quantity" placeholder="Cantidad">
+
+        <button onclick="sendOrder()">Enviar Pedido</button>
+
+        <div id="response"></div>
+    </div>
+
+    <script>
+        function sendOrder() {
+            const customerName = document.getElementById('customer_name').value;
+            const item = document.getElementById('item').value;
+            const quantity = document.getElementById('quantity').value;
+
+            const data = {
+                customer_name: customerName,
+                item: item,
+                quantity: quantity
+            };
+            console.log("Datos enviados:", data);  // Imprimir datos en consola para depuración
+            fetch('http://localhost:5000/send_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('response').innerHTML = `<p style="color: green;">${data.message}</p>`;
+                })
+                .catch(error => {
+                    console.error("Error de solicitud:", error);  // Imprimir errores en consola
+                    document.getElementById('response').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+    </script>
+</body>
+
+</html>
